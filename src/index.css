@@ -1,0 +1,12 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+html{scroll-behavior:smooth}
+body{@apply bg-ink text-bone font-sans font-light antialiased}
+h1,h2,h3{@apply font-serif font-normal tracking-[-0.01em]}
+.label{@apply font-sans text-[10.5px] tracking-[0.3em] uppercase font-normal}
+.btn{@apply inline-flex items-center gap-2 border border-bone/70 px-9 py-4 text-[10.5px] tracking-[0.3em] uppercase transition-colors duration-500 hover:bg-bone hover:text-ink}
+.btn-solid{@apply bg-bone text-ink border-bone hover:bg-transparent hover:text-bone}
+*:focus-visible{outline:1px solid #C9A961;outline-offset:3px}
+::selection{background:#C9A961;color:#0C0908}
+option{background:#0C0908}
+.noscroll::-webkit-scrollbar{display:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

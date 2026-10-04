@@ -1,0 +1,38 @@
+import type {Product,DeptId} from './types'
+// ADD A PRODUCT: append one P(...) line (or a full object). Images default to
+// /images/products/<brand>/<product-slug>-01.jpg, -02.jpg — just drop files in.
+const sl=(s:string)=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')
+const P=(brand:string,department:DeptId,subcategory:string,name:string,price:number,o:Partial<Product>={}):Product=>{const slug=sl(name),b=sl(brand);
+return{id:`${b}-${slug}`,slug,brand,department,subcategory,name,price,currency:'INR',images:[1,2].map(n=>`/images/products/${b}/${slug}-0${n}.jpg`),description:`${name} by ${brand}, selected by CAD for its craftsmanship and character.`,colors:[],sizes:[],material:'',...o}}
+export const products:Product[]=[
+P('Gucci','bags','shoulder-bags','Jackie Shoulder Bag',245000,{colors:['Black'],material:'Leather',featured:true,newArrival:true,images:['/images/products/gucci/jackie-shoulder-bag-01.avif']}),
+P('Gucci','bags','handbags','Horsebit Top Handle',310000,{colors:['Cognac'],material:'Leather',newArrival:true,images:['/images/products/gucci/horsebit-top-handle-01.avif']}),
+P('Gucci','clothing','jackets','Wool Tailored Jacket',189000,{colors:['Navy'],sizes:['S','M','L'],material:'Wool',gender:'Men',images:['/images/products/gucci/wool-tailored-jacket-01.avif']}),
+P('Gucci','perfumes','eau-de-parfum','Bloom Eau de Parfum',14500,{material:'Floral',gender:'Women',images:['/images/products/gucci/bloom-eau-de-parfum-01.png']}),
+P('Louis Vuitton','bags','tote-bags','Neverfull Tote',215000,{colors:['Monogram'],material:'Coated canvas',featured:true,images:['/images/products/louis-vuitton/neverfull-tote-01.avif']}),
+P('Louis Vuitton','bags','travel-bags','Keepall Travel Bag',268000,{colors:['Monogram'],material:'Coated canvas',newArrival:true,images:['/images/products/louis-vuitton/keepall-travel-bag-01.avif']}),
+P('Louis Vuitton','clothing','knitwear','Monogram Knit Jumper',142000,{colors:['Ecru'],sizes:['S','M','L'],material:'Cashmere',gender:'Women',images:['/images/products/louis-vuitton/monogram-knit-jumper-01.avif']}),
+P('Louis Vuitton','watches','dress-watches','Tambour Moon Watch',780000,{colors:['Steel'],material:'Steel',gender:'Men',newArrival:true,images:['/images/products/louis-vuitton/tambour-moon-watch-01.avif']}),
+P('Louis Vuitton','perfumes','eau-de-parfum','Imagination Eau de Parfum',38000,{gender:'Unisex',material:'Citrus',images:['/images/products/louis-vuitton/imagination-eau-de-parfum-01.png']}),
+P('Fendi','bags','handbags','Baguette Bag',298000,{colors:['Tobacco'],material:'Nappa leather',featured:true,newArrival:true,images:['/images/products/fendi/baguette-bag-01.avif']}),
+P('Fendi','bags','mini-bags','First Mini Bag',365000,{colors:['Black'],material:'Leather',images:['/images/products/fendi/first-mini-bag-01.avif']}),
+P('Fendi','clothing','outerwear','Reversible Shearling Coat',420000,{colors:['Brown'],sizes:['S','M','L'],material:'Shearling',gender:'Women',images:['/images/products/fendi/reversible-shearling-coat-01.avif']}),
+P('Fendi','clothing','shirts','Poplin Logo Shirt',58000,{colors:['White'],sizes:['S','M','L','XL'],material:'Cotton',gender:'Men',images:['/images/products/fendi/poplin-logo-shirt-01.avif']}),
+P('Fendi','watches','dress-watches','Selleria Quartz Watch',215000,{colors:['Tan'],material:'Leather strap',gender:'Women',images:['/images/products/fendi/selleria-quartz-watch-01.webp']}),
+P('Dior','bags','handbags','Lady Dior Medium',480000,{colors:['Black'],material:'Lambskin',featured:true,images:['/images/products/dior/lady-dior-medium-01.webp']}),
+P('Dior','bags','crossbody-bags','Saddle Crossbody',395000,{colors:['Oblique'],material:'Jacquard',images:['/images/products/dior/saddle-crossbody-01.webp']}),
+P('Dior','clothing','dresses','Silk Bar Dress',365000,{colors:['Ivory'],sizes:['XS','S','M'],material:'Silk',gender:'Women',newArrival:true,images:['/images/products/dior/silk-bar-dress-01.webp']}),
+P('Dior','clothing','t-shirts','Atelier Cotton T-Shirt',52000,{colors:['White'],sizes:['S','M','L'],material:'Cotton',gender:'Men',images:['/images/products/dior/atelier-cotton-t-shirt-01.webp']}),
+P('Dior','perfumes','eau-de-parfum','Miss Dior Eau de Parfum',16500,{gender:'Women',material:'Floral',images:['/images/products/dior/miss-dior-eau-de-parfum-01.png']}),
+P('Dior','perfumes','eau-de-toilette','Sauvage Eau de Toilette',11800,{gender:'Men',material:'Fresh',images:['/images/products/dior/sauvage-eau-de-toilette-01.png']}),
+P('Dior','watches','dress-watches','La D de Dior Watch',650000,{colors:['Steel'],material:'Steel',gender:'Women',images:['/images/products/dior/la-d-de-dior-watch-01.jpg']}),
+P('Zara','clothing','trousers','Pleated Tailored Trousers',4990,{colors:['Charcoal'],sizes:['S','M','L'],material:'Wool blend',gender:'Men',images:['/images/products/zara/pleated-tailored-trousers-01.jpg']}),
+P('Zara','clothing','dresses','Satin Slip Dress',5990,{colors:['Champagne'],sizes:['XS','S','M'],material:'Satin',gender:'Women',newArrival:true,images:['/images/products/zara/satin-slip-dress-01.webp']}),
+P('Zara','clothing','outerwear','Oversized Wool Coat',12990,{colors:['Camel'],sizes:['S','M','L'],material:'Wool blend',gender:'Women',images:['/images/products/zara/oversized-wool-coat-01.jpg']}),
+P('Zara','clothing','knitwear','Merino Crew Jumper',4590,{colors:['Oat'],sizes:['S','M','L','XL'],material:'Merino',gender:'Men',images:['/images/products/zara/merino-crew-jumper-01.jpg']}),
+P('Parfums de Marly','perfumes','niche-fragrance','Layton Eau de Parfum',28500,{gender:'Unisex',material:'Woody',featured:true,newArrival:true,images:['/images/products/parfums-de-marly/layton-eau-de-parfum-01.png']}),
+P('Parfums de Marly','perfumes','niche-fragrance','Delina Eau de Parfum',31000,{gender:'Women',material:'Floral',featured:true,images:['/images/products/parfums-de-marly/delina-eau-de-parfum-01.png']}),
+P('Parfums de Marly','perfumes','discovery-sets','Discovery Set',9500,{gender:'Unisex',material:'Assorted',images:['/images/products/parfums-de-marly/discovery-set-01.png']}),
+P('Maison Crivelli','perfumes','niche-fragrance','Hibiscus Mahajad',24000,{gender:'Unisex',material:'Floral',newArrival:true,images:['/images/products/maison-crivelli/hibiscus-mahajad-01.png']}),
+P('Maison Crivelli','perfumes','niche-fragrance','Oud Maracuja',27500,{gender:'Unisex',material:'Oud',featured:true,images:['/images/products/maison-crivelli/oud-maracuja-01.png']}),
+P('Gucci','watches','sport-watches','G-Timeless Watch',165000,{colors:['Gold'],material:'Steel',gender:'Women',images:['/images/products/gucci/g-timeless-watch-01.avif']})]

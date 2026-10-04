@@ -1,0 +1,1 @@
+export default{content:['./index.html','./src/**/*.{ts,tsx}'],theme:{extend:{colors:{cream:'#FEF4D5',ink:'#0C0908',panel:'#15100D',line:'#2B221C',bone:'#EFE6D2',gold:'#C9A961',champagne:'#F1E49A',brown:'#2C1810',mute:'#9B9082'},fontFamily:{serif:['"Bodoni Moda"','serif'],sans:['Jost','sans-serif']}}}}

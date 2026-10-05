@@ -1,7 +1,7 @@
 import {useState,useEffect,useRef} from 'react'
 import {Link,useParams,useSearchParams} from 'react-router-dom'
 import {motion,AnimatePresence,useScroll,useTransform} from 'framer-motion'
-import {SlidersHorizontal,Plus,Minus,Mail,MapPin} from 'lucide-react'
+import {SlidersHorizontal,Plus,Minus,Mail,MapPin,ChevronRight} from 'lucide-react'
 import {getProducts,getProduct,getBrands,getBrand,getDepartments,brandsIn,deptsOf,related,slug,inr,campaigns,services} from '../data'
 import {Img,More,Grid,Logo,ProductCard as ProductCardLazy,DeliveryCheck} from '../components/ui'
 import {orders} from '../lib/commerce'
@@ -78,18 +78,108 @@ return <><PageHero title={b.name} text={b.description} image={b.heroImage}/>
 <Listing fixed={{brand:b.id}} title={`New from ${b.name}`}/></>}
 
 export function ProductPage(){
-const {slug:s}=useParams();const p=getProduct(s!);const {add,toggle,wish,view}=useApp();const [color,setC]=useState('');const [size,setSz]=useState('');const [qty,setQ]=useState(1);const [zoom,setZ]=useState(-1);const [openS,setO]=useState('Description')
-useEffect(()=>{p&&view(p.id)},[p?.id]);if(!p)return <Wrap className="py-24"><p>Product not found.</p></Wrap>
-const info:any={Description:p.description,Details:`${p.material?`Material: ${p.material}. `:''}${p.colors.length?`Colour: ${p.colors.join(', ')}.`:''}`||'Details to follow.',Shipping:'Complimentary insured delivery. Dispatched within 2 business days.',Returns:'Returns accepted within 14 days in original condition.',Authenticity:'Every piece is verified by CAD specialists before it ships.'}
-return <Wrap className="py-10"><div className="grid md:grid-cols-12 gap-10">
-<div className="md:col-span-7 grid gap-4">{p.images.map((im,n)=><button key={n} onClick={()=>setZ(zoom===n?-1:n)} aria-label="Toggle zoom" className="overflow-hidden bg-panel cursor-zoom-in"><Img src={im} alt={`${p.brand} ${p.name} view ${n+1}`} className={`transition-transform duration-700 ${zoom===n?'scale-150':''}`}/></button>)}</div>
-<div className="md:col-span-5"><div className="md:sticky md:top-28"><Link to={`/brands/${slug(p.brand)}`} className="label text-mute">{p.brand}</Link><h1 className="font-serif text-5xl mt-2">{p.name}</h1><p className="text-xl mt-3">{inr(p.price)}</p><p className="mt-6 text-mute leading-relaxed">{p.description}</p>
-{p.colors.length>0&&<div className="mt-6"><p className="label mb-2">Colour</p><div className="flex gap-2">{p.colors.map(c=><button key={c} onClick={()=>setC(c)} className={`label border px-4 py-2 ${(color||p.colors[0])===c?'border-bone':'border-line'}`}>{c}</button>)}</div></div>}
-{p.sizes.length>0&&<div className="mt-6"><p className="label mb-2">Size</p><div className="flex gap-2">{p.sizes.map(c=><button key={c} onClick={()=>setSz(c)} className={`label border w-12 h-12 ${size===c?'border-bone bg-bone text-ink':'border-line'}`}>{c}</button>)}</div></div>}
-<div className="mt-6 flex items-center gap-4"><p className="label">Quantity</p><button aria-label="Less" onClick={()=>setQ(Math.max(1,qty-1))}><Minus size={14}/></button>{qty}<button aria-label="More" onClick={()=>setQ(qty+1)}><Plus size={14}/></button></div>
-<DeliveryCheck/><div className="mt-8 flex gap-3"><button onClick={()=>add(p.id,qty)} className="btn btn-solid flex-1 justify-center">Add to bag</button><button onClick={()=>toggle(p.id)} className="btn">{wish.includes(p.id)?'Saved':'Wishlist'}</button></div>
-<div className="mt-10 border-t border-line">{Object.keys(info).map(k=><div key={k} className="border-b border-line"><button onClick={()=>setO(openS===k?'':k)} className="label w-full flex justify-between py-4">{k}{openS===k?<Minus size={14}/>:<Plus size={14}/>}</button>{openS===k&&<p className="pb-4 text-mute">{info[k]}</p>}</div>)}</div></div></div></div>
-<div className="mt-28"><Title>You may also like</Title><Grid items={related(p)}/></div></Wrap>}
+  const {slug:s}=useParams();const p=getProduct(s!);const {add,toggle,wish,view}=useApp()
+  const [color,setC]=useState('');const [size,setSz]=useState('');const [qty,setQ]=useState(1)
+  const [active,setAct]=useState(0);const [openS,setO]=useState('Description');const [added,setAdded]=useState(false)
+  useEffect(()=>{p&&view(p.id)},[p?.id]);if(!p)return <Wrap className="py-24"><p>Product not found.</p></Wrap>
+  const info:any={
+    Description:p.description,
+    Details:`${p.material?`Material: ${p.material}. `:''}${p.colors.length?`Colour: ${p.colors.join(', ')}.`:''}` ||'Details to follow.',
+    Shipping:'Complimentary insured delivery across India. Dispatched within 2 business days with full tracking.',
+    Returns:'Returns accepted within 14 days in original, unworn condition with all packaging.',
+    Authenticity:'Every piece at CAD is authenticated by our specialists before dispatch. Certificate of authenticity included.'
+  }
+  const handleAdd=()=>{add(p.id,qty);setAdded(true);setTimeout(()=>setAdded(false),2500)}
+  const wished=wish.includes(p.id)
+  return (
+    <div className="min-h-screen">
+      <Wrap className="pt-8 pb-0">
+        <nav className="label text-mute text-[10px] tracking-widest flex items-center gap-2">
+          <Link to="/" className="hover:text-bone transition-colors">Home</Link>
+          <ChevronRight size={10}/>
+          <Link to={`/${p.department}`} className="hover:text-bone transition-colors capitalize">{p.department}</Link>
+          <ChevronRight size={10}/>
+          <span className="text-bone">{p.name}</span>
+        </nav>
+      </Wrap>
+      <Wrap className="py-10">
+        <div className="grid md:grid-cols-12 gap-6 lg:gap-14">
+          <div className="md:col-span-7 lg:col-span-7">
+            <div className="relative bg-stone-950 overflow-hidden group cursor-zoom-in">
+              <AnimatePresence mode="wait">
+                <motion.div key={active} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:.5}}>
+                  <Img src={p.images[active]} alt={`${p.brand} ${p.name}`} ratio="aspect-[4/5]" className="transition-transform duration-[2000ms] group-hover:scale-105"/>
+                </motion.div>
+              </AnimatePresence>
+              <div className="absolute top-5 left-5"><span className="label text-bone/60 text-[9px] tracking-[0.3em] bg-ink/20 backdrop-blur-sm px-3 py-1.5">{p.brand.toUpperCase()}</span></div>
+              {p.newArrival&&<div className="absolute top-5 right-5"><span className="label text-ink text-[9px] tracking-widest bg-gold px-3 py-1.5">New Arrival</span></div>}
+            </div>
+            {p.images.length>1&&<div className="flex gap-2 mt-3">
+              {p.images.map((im:string,n:number)=><button key={n} onClick={()=>setAct(n)} aria-label={`View image ${n+1}`}
+                className={`relative w-16 aspect-[3/4] overflow-hidden bg-stone-950 border-b-2 transition-all duration-300 ${active===n?'border-bone opacity-100':'border-transparent opacity-50 hover:opacity-80'}`}>
+                <Img src={im} alt="" ratio="h-full absolute inset-0"/>
+              </button>)}
+            </div>}
+          </div>
+          <div className="md:col-span-5 lg:col-span-5">
+            <div className="md:sticky md:top-24 space-y-0">
+              <Link to={`/brands/${slug(p.brand)}`} className="label text-gold text-[10px] tracking-[0.3em] hover:opacity-70 transition-opacity">{p.brand.toUpperCase()}</Link>
+              <h1 className="font-serif text-4xl lg:text-5xl mt-2 leading-[1.1]">{p.name}</h1>
+              <div className="mt-5 flex items-baseline gap-4">
+                <span className="font-serif text-3xl">{inr(p.price)}</span>
+                <span className="label text-mute text-[10px]">Incl. GST</span>
+              </div>
+              <p className="mt-5 text-mute text-sm leading-relaxed border-t border-line/40 pt-5">{p.description}</p>
+              {p.colors.length>0&&<div className="mt-6">
+                <div className="flex items-center justify-between mb-3"><p className="label text-xs tracking-widest">Colour</p><span className="label text-mute text-xs">{color||p.colors[0]}</span></div>
+                <div className="flex gap-2 flex-wrap">{p.colors.map((c:string)=><button key={c} onClick={()=>setC(c)}
+                  className={`label text-xs px-4 py-2.5 border transition-all duration-300 ${(color||p.colors[0])===c?'border-bone bg-bone text-ink':'border-line hover:border-bone/50'}`}>{c}</button>)}
+                </div>
+              </div>}
+              {p.sizes.length>0&&<div className="mt-6">
+                <div className="flex items-center justify-between mb-3"><p className="label text-xs tracking-widest">Size</p><button className="label text-mute text-xs underline underline-offset-2">Size guide</button></div>
+                <div className="flex gap-2 flex-wrap">{p.sizes.map((sz:string)=><button key={sz} onClick={()=>setSz(sz)}
+                  className={`label text-xs w-12 h-12 border transition-all duration-300 ${size===sz?'border-bone bg-bone text-ink':'border-line hover:border-bone/50'}`}>{sz}</button>)}
+                </div>
+              </div>}
+              <div className="mt-8 space-y-3">
+                <div className="flex items-center gap-4 border border-line/40 w-fit px-4 py-2">
+                  <button aria-label="Decrease" onClick={()=>setQ(Math.max(1,qty-1))} className="text-mute hover:text-bone transition-colors w-6 text-center"><Minus size={14}/></button>
+                  <span className="label text-sm w-4 text-center">{qty}</span>
+                  <button aria-label="Increase" onClick={()=>setQ(qty+1)} className="text-mute hover:text-bone transition-colors w-6 text-center"><Plus size={14}/></button>
+                </div>
+                <button onClick={handleAdd} className={`btn btn-solid w-full justify-center text-sm transition-all duration-500 ${added?'bg-green-900/80 border-green-900':''}`}>
+                  {added?'✓ Added to bag':'Add to bag'}
+                </button>
+                <button onClick={()=>toggle(p.id)} className={`btn w-full justify-center text-sm transition-all duration-300 ${wished?'border-bone/60':'border-line'}`}>
+                  {wished?'Saved to wishlist':'Save to wishlist'}
+                </button>
+              </div>
+              <DeliveryCheck/>
+              <div className="mt-8 border-t border-line/40">
+                {Object.keys(info).map(k=><div key={k} className="border-b border-line/40">
+                  <button onClick={()=>setO(openS===k?'':k)} aria-expanded={openS===k}
+                    className="label w-full flex justify-between items-center py-4 text-xs tracking-widest hover:text-gold transition-colors">
+                    {k}<motion.span animate={{rotate:openS===k?45:0}} transition={{duration:.2}} className="block"><Plus size={13}/></motion.span>
+                  </button>
+                  <AnimatePresence>{openS===k&&<motion.div initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}} transition={{duration:.25}} className="overflow-hidden">
+                    <p className="pb-5 text-mute text-sm leading-relaxed">{info[k]}</p>
+                  </motion.div>}</AnimatePresence>
+                </div>)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-28">
+          <div className="mb-10 border-t border-line/40 pt-10 flex items-baseline justify-between">
+            <h2 className="font-serif text-4xl md:text-5xl">You may also like</h2>
+            <Link to={`/${p.department}`} className="label text-mute text-xs tracking-widest hover:text-bone transition-colors hidden md:block">View all {p.department} →</Link>
+          </div>
+          <Grid items={related(p)}/>
+        </div>
+      </Wrap>
+    </div>
+  )}
 
 export function Wishlist(){const {wish}=useApp();const items=wish.map((i:string)=>getProduct(i)).filter(Boolean)
 return <Wrap className="py-16"><Title>My Wishlist</Title>{items.length?<Grid items={items}/>:<div className="py-16"><p className="font-serif text-4xl">Your collection is waiting.</p><div className="mt-6"><More to="/new-in">Explore new arrivals</More></div></div>}</Wrap>}

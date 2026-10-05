@@ -1,6 +1,6 @@
-import {useState,useEffect} from 'react'
+﻿import {useState,useEffect} from 'react'
 import {Link,Outlet,useLocation,useNavigate} from 'react-router-dom'
-import {Search,User,ShoppingBag,Menu,Heart,X,Plus,Minus,MapPin,Mail,Instagram,ChevronDown} from 'lucide-react'
+import {Search,User,ShoppingBag,Menu,Heart,X,Plus,Minus,MapPin,Mail,Instagram,ChevronDown,ChevronRight,Truck} from 'lucide-react'
 import {motion,AnimatePresence} from 'framer-motion'
 import {getDepartments,brandsIn,search,inr} from '../data'
 import {lines,FREE_SHIP_OVER} from '../lib/commerce'
@@ -54,17 +54,105 @@ return <AnimatePresence>{ui.search&&<motion.div initial={{opacity:0}} animate={{
 {q&&!r.length&&<p className="mt-8 text-mute">No results for “{q}”. Try a brand or department.</p>}</div></motion.div>}</AnimatePresence>}
 
 function CartDrawer(){
-const {ui,open,cart,remove,setQty}=useApp();const items=lines(cart);const sub=items.reduce((a:number,i:any)=>a+i.p.price*i.qty,0);const close=()=>open('cart',false);const left=Math.max(0,FREE_SHIP_OVER-sub)
-return <AnimatePresence>{ui.cart&&<><motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={close} className="fixed inset-0 z-50 bg-black/40"/>
-<motion.aside initial={{x:'100%'}} animate={{x:0}} exit={{x:'100%'}} transition={{duration:.5,ease:[.4,0,.2,1]}} className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-ink flex flex-col" aria-label="Shopping bag">
-<div className="flex justify-between p-6 border-b border-line"><h2 className="font-serif text-3xl">Shopping bag</h2><button aria-label="Close bag" onClick={close}><X/></button></div>
-{items.length>0&&<div className="px-6 pt-4"><p className="label text-mute">{left?`${inr(left)} away from complimentary delivery`:'Complimentary delivery unlocked'}</p><div className="h-px bg-line mt-2"><div className="h-px bg-bone transition-all duration-700" style={{width:`${Math.min(100,sub/FREE_SHIP_OVER*100)}%`}}/></div></div>}
-<div className="flex-1 overflow-auto p-6 space-y-6">{!items.length&&<p className="text-mute">Your bag is empty.</p>}
-{items.map((i:any)=><motion.div layout initial={{opacity:0,x:30}} animate={{opacity:1,x:0}} key={i.id} className="flex gap-4"><Img src={i.p.images[0]} alt={i.p.name} className="w-24"/><div className="flex-1"><p className="label text-mute">{i.p.brand}</p><p className="font-serif text-xl">{i.p.name}</p><p className="text-sm">{inr(i.p.price)}</p>
-<div className="flex items-center gap-3 mt-2"><button aria-label="Decrease" onClick={()=>setQty(i.id,i.qty-1)}><Minus size={14}/></button>{i.qty}<button aria-label="Increase" onClick={()=>setQty(i.id,i.qty+1)}><Plus size={14}/></button></div></div>
-<button aria-label="Remove" onClick={()=>remove(i.id)}><X size={16}/></button></motion.div>)}</div>
-<div className="p-6 border-t border-line space-y-3"><div className="flex justify-between"><span className="label">Subtotal</span><span>{inr(sub)}</span></div>
-{items.length>0&&<Link to="/checkout" onClick={close} className="btn btn-solid w-full justify-center">Checkout</Link>}<button onClick={close} className="btn w-full justify-center">Continue shopping</button></div></motion.aside></>}</AnimatePresence>}
+const {ui,open,cart,remove,setQty}=useApp()
+const items=lines(cart)
+const sub=items.reduce((a:number,i:any)=>a+i.p.price*i.qty,0)
+const close=()=>open('cart',false)
+const left=Math.max(0,FREE_SHIP_OVER-sub)
+const pct=Math.min(100,sub/FREE_SHIP_OVER*100)
+return <AnimatePresence>{ui.cart&&<>
+  <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={close} className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"/>
+  <motion.aside initial={{x:'100%'}} animate={{x:0}} exit={{x:'100%'}} transition={{duration:.55,ease:[.4,0,.2,1]}}
+    className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-[480px] bg-[#0E0D0C] flex flex-col shadow-2xl border-l border-white/5"
+    aria-label="Shopping bag">
+    <div className="flex items-start justify-between px-8 py-7 border-b border-white/8">
+      <div>
+        <h2 className="font-serif text-3xl tracking-tight">Shopping Bag</h2>
+        <p className="label text-mute text-[10px] tracking-[0.2em] mt-1">{items.length} {items.length===1?'ITEM':'ITEMS'}</p>
+      </div>
+      <button aria-label="Close bag" onClick={close} className="mt-1 w-8 h-8 flex items-center justify-center border border-white/10 hover:border-white/30 transition-colors">
+        <X size={14} strokeWidth={1.5}/>
+      </button>
+    </div>
+    {items.length>0&&<div className="px-8 py-4 bg-white/[0.02] border-b border-white/5">
+      <div className="flex items-center gap-2 mb-2.5">
+        <Truck size={12} className={left===0?'text-gold':'text-mute'} strokeWidth={1.5}/>
+        <p className="label text-[10px] tracking-widest">
+          {left===0?<span className="text-gold">Complimentary delivery unlocked</span>:<span className="text-mute">{inr(left)} more for free delivery</span>}
+        </p>
+      </div>
+      <div className="h-px bg-white/10">
+        <motion.div className="h-px bg-gold" animate={{width:`${pct}%`}} transition={{duration:.7,ease:'easeOut'}}/>
+      </div>
+    </div>}
+    <div className="flex-1 overflow-y-auto overscroll-contain">
+      {!items.length&&<div className="flex flex-col items-center justify-center h-full text-center px-8 py-20">
+        <ShoppingBag size={48} strokeWidth={0.7} className="text-white/20 mb-6"/>
+        <p className="font-serif text-3xl">Your bag is empty</p>
+        <p className="text-mute text-sm mt-3 max-w-xs leading-relaxed">Discover exceptional pieces from the world's most distinctive houses.</p>
+        <button onClick={close} className="btn btn-solid mt-8 text-xs tracking-widest px-8">Explore collection</button>
+      </div>}
+      <AnimatePresence initial={false}>
+        {items.map((i:any)=><motion.div layout key={i.id}
+          initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0,x:60,transition:{duration:.25}}}
+          className="flex gap-5 px-8 py-6 group border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+          <Link to={`/product/${i.p.slug}`} onClick={close} className="shrink-0 w-28 bg-stone-950 overflow-hidden block">
+            <Img src={i.p.images[0]} alt={i.p.name} ratio="aspect-[3/4]" className="transition-transform duration-700 group-hover:scale-105"/>
+          </Link>
+          <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+            <div>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="label text-gold text-[9px] tracking-[0.25em] mb-1">{i.p.brand.toUpperCase()}</p>
+                  <Link to={`/product/${i.p.slug}`} onClick={close}>
+                    <p className="font-serif text-xl leading-snug hover:opacity-60 transition-opacity">{i.p.name}</p>
+                  </Link>
+                </div>
+                <button aria-label="Remove item" onClick={()=>remove(i.id)}
+                  className="shrink-0 p-1 text-mute hover:text-bone transition-all duration-200 opacity-0 group-hover:opacity-100">
+                  <X size={13} strokeWidth={1.5}/>
+                </button>
+              </div>
+              {i.color&&<p className="text-xs text-mute mt-1.5">{i.color}</p>}
+            </div>
+            <div className="flex items-center justify-between mt-4">
+              <div className="flex items-center border border-white/10 hover:border-white/20 transition-colors">
+                <button aria-label="Decrease quantity" onClick={()=>setQty(i.id,i.qty-1)}
+                  className="w-8 h-8 flex items-center justify-center text-mute hover:text-bone transition-colors">
+                  <Minus size={11} strokeWidth={2}/>
+                </button>
+                <span className="label text-xs w-7 text-center tabular-nums">{i.qty}</span>
+                <button aria-label="Increase quantity" onClick={()=>setQty(i.id,i.qty+1)}
+                  className="w-8 h-8 flex items-center justify-center text-mute hover:text-bone transition-colors">
+                  <Plus size={11} strokeWidth={2}/>
+                </button>
+              </div>
+              <span className="font-serif text-xl">{inr(i.p.price*i.qty)}</span>
+            </div>
+          </div>
+        </motion.div>)}
+      </AnimatePresence>
+    </div>
+    {items.length>0&&<div className="border-t border-white/8 bg-[#0E0D0C]">
+      <div className="px-8 pt-6 pb-3">
+        <div className="flex justify-between items-baseline mb-1">
+          <span className="label text-mute text-[10px] tracking-widest">SUBTOTAL</span>
+          <span className="font-serif text-2xl">{inr(sub)}</span>
+        </div>
+        <p className="label text-mute text-[10px]">Taxes &amp; delivery calculated at checkout</p>
+      </div>
+      <div className="px-8 pb-8 pt-3 space-y-2.5">
+        <Link to="/checkout" onClick={close}
+          className="btn btn-solid w-full justify-center text-xs tracking-[0.18em] flex items-center gap-2 py-4">
+          PROCEED TO CHECKOUT <ChevronRight size={13} strokeWidth={1.5}/>
+        </Link>
+        <button onClick={close} className="btn w-full justify-center text-xs tracking-widest text-mute hover:text-bone py-3">
+          CONTINUE SHOPPING
+        </button>
+      </div>
+    </div>}
+  </motion.aside>
+</>}</AnimatePresence>}
 
 function Concierge(){
 const {ui,open}=useApp();const nav=useNavigate();const go=(to:string)=>{open('concierge',false);nav(to)}

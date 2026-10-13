@@ -8,4 +8,5 @@ b('Fendi','Roman craft, playful luxury and fur-room precision.',true,'/images/br
 b('Dior','Couture elegance from Avenue Montaigne.',true,'/images/brands/dior.webp'),
 b('Zara','Contemporary wardrobe essentials, tailored with intent.',false,'/images/brands/zara.jpg'),
 b('Parfums de Marly','Fragrance inspired by the eighteenth-century court.'),
-b('Maison Crivelli','Niche perfumery built on rare, radiant raw materials.')]
+b('Maison Crivelli','Niche perfumery built on rare, radiant raw materials.'),
+b('Amouage','The gift of kings — Omani perfumery of unparalleled opulence.',true,'/images/brands/amouage.jpg')]

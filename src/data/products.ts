@@ -42,4 +42,5 @@ P('Amouage','perfumes','niche-fragrance','Decesion Eau de Parfum',48000,{gender:
 P('Amouage','perfumes','niche-fragrance','Elsewhere Eau de Parfum',45000,{gender:'Unisex',material:'Woody',featured:true,images:['/images/products/amouage/elsewhere.webp','/images/products/amouage/elsewhere-01.webp']}),
 P('Amouage','perfumes','niche-fragrance','Line618 Eau de Parfum',40000,{gender:'Unisex',material:'Spicy',featured:true,images:['/images/products/amouage/line618.webp','/images/products/amouage/line618-01.webp']}),
 P('Amouage','perfumes','niche-fragrance','Sequence Eau de Parfum',39000,{gender:'Unisex',material:'Woody',featured:true,images:['/images/products/amouage/sequence.webp','/images/products/amouage/sequence-01.webp']}),
-P('Gucci','watches','sport-watches','G-Timeless Watch',165000,{colors:['Gold'],material:'Steel',gender:'Women',images:['/images/products/gucci/g-timeless-watch-01.avif']})]
+P('Gucci','watches','sport-watches','G-Timeless Watch',165000,{colors:['Gold'],material:'Steel',gender:'Women',images:['/images/products/gucci/g-timeless-watch-01.avif']})
+]

@@ -1,12 +1,101 @@
 @tailwind base;@tailwind components;@tailwind utilities;
 html{scroll-behavior:smooth}
-body{@apply bg-ink text-bone font-sans font-light antialiased}
+
+/* ── Theme variables ── */
+:root,[data-theme="dark"]{
+  --bg-ink:#0C0908;--bg-panel:#15100D;--text-bone:#EFE6D2;
+  --text-mute:#9B9082;--line:#2B221C;--gold:#C9A961;
+  --bg-card:rgba(255,255,255,0.03);--bg-hover:rgba(255,255,255,0.06);
+  --bg-input:transparent;--border-input:rgba(201,169,97,0.2);
+  --shadow-card:0 4px 24px rgba(0,0,0,0.4);
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --bg-ink:#FAFAF8;--bg-panel:#F0EDE6;--text-bone:#1A1714;
+  --text-mute:#6B6560;--line:#DDD8D0;--gold:#9A7B3A;
+  --bg-card:rgba(0,0,0,0.03);--bg-hover:rgba(0,0,0,0.06);
+  --bg-input:#fff;--border-input:rgba(0,0,0,0.15);
+  --shadow-card:0 4px 24px rgba(0,0,0,0.08);
+  color-scheme:light;
+}
+
+body{
+  background:var(--bg-ink);color:var(--text-bone);
+  @apply font-sans font-light antialiased;
+  transition:background-color 0.5s,color 0.5s;
+}
 h1,h2,h3{@apply font-serif font-normal tracking-[-0.01em]}
 .label{@apply font-sans text-[10.5px] tracking-[0.3em] uppercase font-normal}
-.btn{@apply inline-flex items-center gap-2 border border-bone/70 px-9 py-4 text-[10.5px] tracking-[0.3em] uppercase transition-colors duration-500 hover:bg-bone hover:text-ink}
-.btn-solid{@apply bg-bone text-ink border-bone hover:bg-transparent hover:text-bone}
-*:focus-visible{outline:1px solid #C9A961;outline-offset:3px}
-::selection{background:#C9A961;color:#0C0908}
-option{background:#0C0908}
+.btn{@apply inline-flex items-center gap-2 px-9 py-4 text-[10.5px] tracking-[0.3em] uppercase transition-colors duration-500;
+  border:1px solid var(--text-bone);opacity:0.7;}
+.btn:hover{background:var(--text-bone);color:var(--bg-ink);opacity:1}
+.btn-solid{background:var(--text-bone);color:var(--bg-ink);border-color:var(--text-bone);opacity:1}
+.btn-solid:hover{background:transparent;color:var(--text-bone)}
+
+*:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+::selection{background:var(--gold);color:#0C0908}
+option{background:var(--bg-ink)}
 .noscroll::-webkit-scrollbar{display:none}
+
+/* Reduced motion */
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── Theme-aware utility colors ── */
+.bg-ink{background-color:var(--bg-ink)}
+.bg-panel{background-color:var(--bg-panel)}
+.text-bone{color:var(--text-bone)}
+.text-mute{color:var(--text-mute)}
+.text-gold{color:var(--gold)}
+.border-line{border-color:var(--line)}
+
+/* ── Responsive helpers ── */
+@media(max-width:767px){
+  .hero-text-mobile{font-size:clamp(2rem,8vw,3.5rem)!important}
+  .product-info-mobile{padding-top:1rem}
+}
+
+/* ── Glass card for auth pages ── */
+.glass-card{
+  background:var(--bg-card);
+  backdrop-filter:blur(24px) saturate(1.4);
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border:1px solid rgba(201,169,97,0.15);
+  box-shadow:var(--shadow-card);
+}
+
+/* ── Mobile nav overlay ── */
+@media(max-width:1023px){
+  .mega-menu-desktop{display:none!important}
+}
+
+/* ── Responsive product grid ── */
+@media(max-width:639px){
+  .product-grid-responsive{grid-template-columns:repeat(2,1fr)!important;gap:0.75rem!important}
+}
+@media(min-width:640px)and(max-width:1023px){
+  .product-grid-responsive{grid-template-columns:repeat(2,1fr)!important}
+}
+
+/* ── Footer responsive ── */
+@media(max-width:767px){
+  .footer-grid{grid-template-columns:1fr 1fr!important;gap:1.5rem!important}
+  .footer-brand{grid-column:1/-1}
+}
+
+/* ── Checkout responsive ── */
+@media(max-width:767px){
+  .checkout-grid{grid-template-columns:1fr!important}
+  .checkout-summary{order:-1;margin-bottom:1rem}
+}
+
+/* ── Account sidebar responsive ── */
+@media(max-width:767px){
+  .account-grid{grid-template-columns:1fr!important}
+  .account-sidebar{display:flex;overflow-x:auto;gap:0.5rem;border-bottom:1px solid var(--line);padding-bottom:0.75rem;margin-bottom:1.5rem}
+  .account-sidebar li{white-space:nowrap}
+}
+
+/* ── Search input mobile ── */
+@media(max-width:639px){
+  .search-input-mobile{font-size:clamp(1.5rem,6vw,3rem)!important}
+}
